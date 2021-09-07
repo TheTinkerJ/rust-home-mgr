@@ -1,3 +1,4 @@
+//! 消费明细请求响应模块
 use crate::diesel::{prelude::*, result::Error};
 
 use crate::ledger::database::model::*;
@@ -10,6 +11,11 @@ use rocket::serde::json::Json;
 use crate::ledger::database::schema::cost_detail::dsl::*;
 use crate::ledger::DBMethod::*;
 
+/// 消费明细列表
+///
+/// 支持分页,目前需要从 page 0 开始计数.
+///
+/// 页的计算方式 {start: page*limit, end: page*limit+limit}
 #[get("/list?<page>&<limit>")]
 pub async fn cost_detail_list(
     page: i32,
@@ -38,6 +44,9 @@ pub async fn cost_detail_list(
     )
 }
 
+/// 消费明细获取
+///
+/// 根据记录的id获取
 #[get("/query-by?<cost_detail_id>")]
 pub async fn cost_detail_fetch(
     cost_detail_id: i32,
@@ -53,6 +62,9 @@ pub async fn cost_detail_fetch(
     (Status::Accepted, Json(CommonRespose::build(exec_result)))
 }
 
+/// 消费明细获取
+///
+/// 根据关联的消费记录获取
 #[get("/related-to?<ref_shopping_id>")]
 pub async fn cost_detail_related(
     ref_shopping_id: i32,
@@ -68,6 +80,19 @@ pub async fn cost_detail_related(
     (Status::Accepted, Json(CommonRespose::build(exec_result)))
 }
 
+/// 消费明细更新
+///
+/// 需要传入 json, 以下仅表示类似结构,引号内值表示需要填入的类型,Option表示可选
+/// ```json
+/// {
+///    "id": "Oprion<i32>,自身id",  
+///    "shopping_id": "i32,消费关联",  
+///    "good_id": "i32,商品关联",            
+///    "cost": "i32,金额（分）",               
+///    "count": "i32,数量（个）",              
+///    "comment": "Option<String>,消费评价 ",
+/// }
+///```
 #[post("/update", data = "<input>", format = "json")]
 pub async fn cost_detail_update(
     input: Json<CostDetail4Update>,
@@ -102,6 +127,9 @@ pub async fn cost_detail_update(
     (Status::Accepted, Json(CommonRespose::build(exec_result)))
 }
 
+/// 消费明细删除
+///
+/// 根据消费明细的ID删除
 #[get("/drop-by?<cost_detail_id>")]
 pub async fn cost_detail_delete(
     cost_detail_id: i32,

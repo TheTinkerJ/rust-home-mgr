@@ -1,3 +1,8 @@
+//! 表结构定义
+//!
+//! diesel会根据schema文件做代码生成
+//!
+//! 用法: use crate::ledger::database::schema::<table_name>::dsl::*;
 table! {
   /// 消费场所
   market_place(id){

@@ -10,6 +10,11 @@ use rocket::serde::json::Json;
 use crate::ledger::database::schema::goods::dsl::*;
 use crate::ledger::DBMethod::*;
 
+/// 消费商品列表
+///
+/// 支持分页,目前需要从 page 0 开始计数.
+///
+/// 页的计算方式 {start: page*limit, end: page*limit+limit}
 #[get("/list?<page>&<limit>")]
 pub async fn goods_list(
     page: i32,
@@ -37,6 +42,9 @@ pub async fn goods_list(
     )
 }
 
+/// 消费商品获取
+///
+/// 根据商品名称模糊匹配
 #[get("/query-by-name?<item_name>")]
 pub async fn goods_fetch_by_name(
     item_name: String,
@@ -49,6 +57,9 @@ pub async fn goods_fetch_by_name(
     (Status::Accepted, Json(CommonRespose::build(exec_result)))
 }
 
+/// 消费商品获取
+///
+/// 根据商品的ID获取
 #[get("/query-by-id?<item_id>")]
 pub async fn goods_fetch_by_id(
     item_id: i32,
@@ -60,6 +71,18 @@ pub async fn goods_fetch_by_id(
     (Status::Accepted, Json(CommonRespose::build(exec_result)))
 }
 
+/// 消费商品更新
+///
+/// 需要传入 json, 以下仅表示类似结构,引号内值表示需要填入的类型,Option表示可选
+/// ```json
+/// {
+///    "id": "Oprion<i32>,自身id",  
+///    "name": "i32",  
+///    "cls1": "Option<String>",            
+///    "cls2": "Option<String>",               
+///    "cls3": "Option<String>",              
+/// }
+///```
 #[post("/update", data = "<input>", format = "json")]
 pub async fn goods_update(
     input: Json<Goods4Update>,
@@ -93,6 +116,9 @@ pub async fn goods_update(
     (Status::Accepted, Json(CommonRespose::build(exec_result)))
 }
 
+/// 消费商品删除
+///
+/// 根据商品的ID删除
 #[get("/drop-by?<item_id>")]
 pub async fn goods_delete(item_id: i32, db: MysqlDbConn) -> (Status, Json<CommonRespose<usize>>) {
     let exec_result = db

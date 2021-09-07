@@ -1,7 +1,11 @@
+//! 项目内的数据库模型
 use crate::ledger::database::schema::*;
 use chrono::NaiveDateTime;
 use rocket::serde::{Deserialize, Serialize};
 
+/// 消费场所的映射结构
+///
+/// 用法: 数据库 -> Ledger
 #[derive(Queryable, Debug, Serialize)]
 pub struct MarketPlace {
     pub id: Option<i32>,
@@ -14,6 +18,9 @@ pub struct MarketPlace {
     pub adcode: Option<String>,
 }
 
+/// 消费场所的映射结构
+///
+/// 用法: 数据库 <- Ledger
 #[derive(Insertable, Deserialize, Debug)]
 #[table_name = "market_place"]
 pub struct MarketPlace4Update {
@@ -25,6 +32,9 @@ pub struct MarketPlace4Update {
     pub adcode: Option<String>,        // 商家所在位置行政编码
 }
 
+/// 消费记录的映射结构
+///
+/// 用法: 数据库 -> Ledger
 #[derive(Queryable, Debug, Serialize)]
 pub struct ShoppingRecords {
     pub id: Option<i32>,
@@ -34,6 +44,9 @@ pub struct ShoppingRecords {
     pub comment: Option<String>, // 消费总体评论
 }
 
+/// 消费记录的映射结构
+///
+/// 用法: 数据库 <- Ledger
 #[derive(Insertable, Deserialize, Debug)]
 #[table_name = "shopping_records"]
 pub struct ShoppingRecords4Update {
@@ -42,6 +55,9 @@ pub struct ShoppingRecords4Update {
     pub comment: Option<String>, // 消费总体评论
 }
 
+/// 消费明细的映射结构
+///
+/// 用法: 数据库 -> Ledger
 #[derive(Queryable, Debug, Serialize)]
 pub struct CostDetail {
     pub id: Option<i32>,
@@ -54,6 +70,9 @@ pub struct CostDetail {
     pub comment: Option<String>, // 消费评价
 }
 
+/// 消费明细的映射结构
+///
+/// 用法: 数据库 <- Ledger
 #[derive(Insertable, Deserialize, Debug)]
 #[table_name = "cost_detail"]
 pub struct CostDetail4Update {
@@ -64,7 +83,9 @@ pub struct CostDetail4Update {
     pub count: i32,              // 数量（个）
     pub comment: Option<String>, // 消费评价
 }
-
+/// 消费商品的映射结构
+///
+/// 用法: 数据库 -> Ledger
 #[derive(Queryable, Debug, Serialize)]
 pub struct Goods {
     pub id: Option<i32>,
@@ -76,6 +97,9 @@ pub struct Goods {
     pub cls3: Option<String>, // 三级类目
 }
 
+/// 消费商品的映射结构
+///
+/// 用法: 数据库 <- Ledger
 #[derive(Insertable, Deserialize, Debug)]
 #[table_name = "goods"]
 pub struct Goods4Update {

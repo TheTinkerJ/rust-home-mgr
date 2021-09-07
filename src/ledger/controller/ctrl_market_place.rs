@@ -10,6 +10,11 @@ use rocket::serde::json::Json;
 use crate::ledger::database::schema::market_place::dsl::*;
 use crate::ledger::DBMethod::*;
 
+/// 消费场所列表
+///
+/// 支持分页,目前需要从 page 0 开始计数.
+///
+/// 页的计算方式 {start: page*limit, end: page*limit+limit}
 #[get("/list?<page>&<limit>")]
 pub async fn market_place_list(
     page: i32,
@@ -38,6 +43,9 @@ pub async fn market_place_list(
     )
 }
 
+/// 消费场所获取
+///
+/// 根据场所名称模糊匹配
 #[get("/query-by?<market_name>")]
 pub async fn market_place_fetch(
     market_name: String,
@@ -54,6 +62,19 @@ pub async fn market_place_fetch(
     (Status::Accepted, Json(CommonRespose::build(exec_result)))
 }
 
+/// 消费场所更新
+///
+/// 需要传入 json, 以下仅表示类似结构,引号内值表示需要填入的类型,Option表示可选
+/// ```json
+/// {
+///    "id": "Oprion<i32>,自身id",  
+///    "name": "i32",  
+///    "lng": "Option<String>",            
+///    "lat": "Option<String>",                        
+///    "location_desc": "Option<String>",               
+///    "adcode": "Option<String>",              
+/// }
+///```
 #[post("/update", data = "<input>", format = "json")]
 pub async fn market_place_update(
     input: Json<MarketPlace4Update>,
@@ -88,6 +109,9 @@ pub async fn market_place_update(
     (Status::Accepted, Json(CommonRespose::build(exec_result)))
 }
 
+/// 消费场所删除
+///
+/// 根据场所的ID删除
 #[get("/drop-by?<market_id>")]
 pub async fn market_place_delete(
     market_id: i32,
