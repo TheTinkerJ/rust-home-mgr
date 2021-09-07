@@ -25,18 +25,11 @@ pub struct CommonRespose<T> {
 }
 
 impl<T> CommonRespose<T> {
-    pub fn build(db_response: Result<T, Error>) -> CommonRespose<T> {
-        match db_response {
-            Ok(t) => CommonRespose {
-                code: ResBundle::SUCCESS.get_code(),
-                message: ResBundle::SUCCESS.get_message().to_string(),
-                data: Some(t),
-            },
-            Err(e) => CommonRespose {
-                code: ResBundle::ERROR.get_code(),
-                message: ResBundle::ERROR.get_message().to_string(),
-                data: None,
-            },
+    pub fn build(result_response: Result<T, Error>) -> CommonRespose<T> {
+        CommonRespose {
+            code: ResBundle::SUCCESS.get_code(),
+            message: ResBundle::SUCCESS.get_message().to_string(),
+            data: result_response.ok(),
         }
     }
 }
@@ -55,28 +48,18 @@ pub struct CommonPageRespose<T> {
 // todo Result to Option?
 impl<T> CommonPageRespose<T> {
     pub fn build_page(
-        db_response: Result<T, Error>,
+        result_response: Result<T, Error>,
         total: Option<i32>,
         page: Option<i32>,
         limit: Option<i32>,
     ) -> CommonPageRespose<T> {
-        match db_response {
-            Ok(t) => CommonPageRespose {
-                code: ResBundle::SUCCESS.get_code(),
-                message: ResBundle::SUCCESS.get_message().to_string(),
-                data: Some(t),
-                total,
-                page,
-                limit,
-            },
-            Err(_) => CommonPageRespose {
-                code: ResBundle::ERROR.get_code(),
-                message: ResBundle::ERROR.get_message().to_string(),
-                data: None,
-                total,
-                page,
-                limit,
-            },
+        CommonPageRespose {
+            code: ResBundle::SUCCESS.get_code(),
+            message: ResBundle::SUCCESS.get_message().to_string(),
+            data: result_response.ok(),
+            total,
+            page,
+            limit,
         }
     }
 }

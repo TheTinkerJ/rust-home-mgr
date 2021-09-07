@@ -19,5 +19,14 @@ fn rocket() -> _ {
             "/ledger/market-place",
             ledger::controller::routes_market_place(),
         )
+        .mount(
+            "/ledger/shopping-records",
+            ledger::controller::routes_shopping_records(),
+        )
+        .mount(
+            "/ledger/cost-detail",
+            ledger::controller::routes_cost_detail(),
+        )
+        .mount("/ledger/goods", ledger::controller::routes_goods())
         .attach(ledger::MysqlDbConn::fairing())
 }
