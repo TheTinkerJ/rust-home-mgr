@@ -1,3 +1,7 @@
+use std::default;
+
+use rocket_cors::{AllowedHeaders, AllowedOrigins};
+
 mod ledger;
 mod utils;
 
@@ -13,6 +17,16 @@ fn index() -> &'static str {
 
 #[launch]
 fn rocket() -> _ {
+    let allowed_origins = AllowedOrigins::All;
+    let cors = rocket_cors::CorsOptions {
+        allowed_origins,
+        allowed_headers: AllowedHeaders::All,
+        allow_credentials: true,
+        ..Default::default()
+    }
+    .to_cors()
+    .expect("cors config error");
+
     rocket::build()
         .mount("/", routes![index])
         .mount(
@@ -29,4 +43,5 @@ fn rocket() -> _ {
         )
         .mount("/ledger/goods", ledger::controller::routes_goods())
         .attach(ledger::MysqlDbConn::fairing())
+        .attach(cors)
 }

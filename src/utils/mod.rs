@@ -31,13 +31,13 @@ pub struct CommonRespose<T> {
 
 impl<T> CommonRespose<T> {
     pub fn build(result_response: Result<T, Error>) -> CommonRespose<T> {
-        match db_response {
+        match result_response {
             Ok(t) => CommonRespose {
                 code: ResBundle::SUCCESS.get_code(),
                 message: ResBundle::SUCCESS.get_message().to_string(),
                 data: Some(t),
             },
-            Err(e) => CommonRespose {
+            Err(_) => CommonRespose {
                 code: ResBundle::ERROR.get_code(),
                 message: ResBundle::ERROR.get_message().to_string(),
                 data: None,
@@ -65,16 +65,22 @@ impl<T> CommonPageRespose<T> {
         page: Option<i32>,
         limit: Option<i32>,
     ) -> CommonPageRespose<T> {
-        match db_response {
-            Ok(t) => CommonRespose {
+        match result_response {
+            Ok(t) => CommonPageRespose {
                 code: ResBundle::SUCCESS.get_code(),
                 message: ResBundle::SUCCESS.get_message().to_string(),
                 data: Some(t),
+                total,
+                page,
+                limit,
             },
-            Err(e) => CommonRespose {
+            Err(_) => CommonPageRespose {
                 code: ResBundle::ERROR.get_code(),
                 message: ResBundle::ERROR.get_message().to_string(),
                 data: None,
+                total,
+                page,
+                limit,
             },
         }
     }
